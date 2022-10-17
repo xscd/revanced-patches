@@ -1,10 +1,9 @@
 package app.revanced.patches.youtube.layout.sponsorblock.resource.patch
 
+import app.revanced.patcher.ResourceContext
 import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
-import app.revanced.patcher.data.ResourceContext
 import app.revanced.patcher.patch.PatchResult
-import app.revanced.patcher.patch.PatchResultSuccess
 import app.revanced.patcher.patch.ResourcePatch
 import app.revanced.patcher.patch.annotations.DependsOn
 import app.revanced.patches.shared.mapping.misc.patch.ResourceMappingPatch
@@ -84,9 +83,9 @@ class SponsorBlockResourcePatch : ResourcePatch {
         val hostingResourceStream =
             classLoader.getResourceAsStream("sponsorblock/host/layout/youtube_controls_layout.xml")!!
 
-        val targetXmlEditor = context.xmlEditor["res/layout/youtube_controls_layout.xml"]
+        val targetXmlEditor = context.openEditor("res/layout/youtube_controls_layout.xml", context.apkBundle.base)
         "RelativeLayout".copyXmlNode(
-            context.xmlEditor[hostingResourceStream],
+            context.openEditor(hostingResourceStream),
             targetXmlEditor
         ).also {
             val children = targetXmlEditor.file.getElementsByTagName("RelativeLayout").item(0).childNodes
@@ -111,6 +110,6 @@ class SponsorBlockResourcePatch : ResourcePatch {
             it.type == "id" && it.name == "reel_persistent_edu_button_group"
         }.id
 
-        return PatchResultSuccess()
+        return PatchResult.Success
     }
 }

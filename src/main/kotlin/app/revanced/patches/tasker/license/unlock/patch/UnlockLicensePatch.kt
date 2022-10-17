@@ -1,13 +1,13 @@
 package app.revanced.patches.tasker.license.unlock.patch
 
 import app.revanced.extensions.toErrorResult
+import app.revanced.patcher.BytecodeContext
 import app.revanced.patcher.annotation.Description
 import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
-import app.revanced.patcher.data.BytecodeContext
 import app.revanced.patcher.extensions.instruction
 import app.revanced.patcher.patch.BytecodePatch
-import app.revanced.patcher.patch.PatchResultSuccess
+import app.revanced.patcher.patch.PatchResult
 import app.revanced.patcher.patch.annotations.Patch
 import app.revanced.patches.tasker.license.unlock.annotations.UnlockLicenseCompatibility
 import app.revanced.patches.tasker.license.unlock.fingerprints.CheckLicenseFingerprint
@@ -41,6 +41,6 @@ class UnlockLicensePatch : BytecodePatch(
                 (this as ReferenceInstruction).reference as MethodReference
             )
         }
-        PatchResultSuccess()
+        PatchResult.Success
     } ?: CheckLicenseFingerprint.toErrorResult()
 }

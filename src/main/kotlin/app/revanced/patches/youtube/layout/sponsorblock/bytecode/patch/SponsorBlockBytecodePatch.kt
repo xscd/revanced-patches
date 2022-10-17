@@ -1,18 +1,15 @@
 package app.revanced.patches.youtube.layout.sponsorblock.bytecode.patch
 
+import app.revanced.patcher.BytecodeContext
 import app.revanced.patcher.annotation.Description
 import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
-import app.revanced.patcher.data.BytecodeContext
-import app.revanced.patcher.data.toMethodWalker
 import app.revanced.patcher.extensions.addInstruction
 import app.revanced.patcher.extensions.addInstructions
 import app.revanced.patcher.extensions.replaceInstruction
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint.Companion.resolve
 import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchResult
-import app.revanced.patcher.patch.PatchResultError
-import app.revanced.patcher.patch.PatchResultSuccess
 import app.revanced.patcher.patch.annotations.DependsOn
 import app.revanced.patcher.patch.annotations.Patch
 import app.revanced.patcher.util.proxy.mutableTypes.MutableMethod
@@ -244,8 +241,7 @@ class SponsorBlockBytecodePatch : BytecodePatch(
             ((rectangleFieldInvalidatorInstructions.elementAt(rectangleFieldInvalidatorInstructions.count() - 3) as ReferenceInstruction).reference as FieldReference).name
 
         // replace the "replaceMeWith*" strings
-        context
-            .proxy(context.classes.first { it.type.endsWith("PlayerController;") })
+        context.classes.proxy(context.classes.first { it.type.endsWith("PlayerController;") })
             .mutableClass
             .methods
             .find { it.name == "setSponsorBarRect" }
@@ -267,7 +263,7 @@ class SponsorBlockBytecodePatch : BytecodePatch(
                             method.replaceStringInstruction(index, it, "seekHelper")
                     }
                 }
-            } ?: return PatchResultError("Could not find the method which contains the replaceMeWith* strings")
+            } ?: return PatchResult.Error("Could not find the method which contains the replaceMeWith* strings")
 
         val startVideoInformerMethod = StartVideoInformerFingerprint.result!!.mutableMethod
         startVideoInformerMethod.addInstructions(
@@ -288,6 +284,6 @@ class SponsorBlockBytecodePatch : BytecodePatch(
 
         // TODO: isSBChannelWhitelisting implementation
 
-        return PatchResultSuccess()
+        return PatchResult.Success
     }
 }
